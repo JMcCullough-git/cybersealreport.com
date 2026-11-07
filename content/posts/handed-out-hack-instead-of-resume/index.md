@@ -34,6 +34,10 @@ Nonetheless, it reminded me of the need to showcase your practical skills. In an
 It's easy to hear people complain about the job market but rarely do you see people want to step out of the comfort zone of the resume. The one or two pages must summarize all our capabilities. A few lines of ink, a few bytes on your hard drive must encapsulate your proficiency at the job.
 
 That's why its a breath of fresh air when someone like Steven finds new ways to stand out. Not just doing what the other 243 applicants chose to do and send a two page pdf. 
+
+As Steven put it, "Anyone can generate a clean bullet point. Not everyone can hand you a device that does something." 
+
+The idea orginated from 
 ## Let's talk numbers
 
 
