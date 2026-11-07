@@ -1,84 +1,118 @@
+```
+\_                                                                        _/
+  \@@@\__                                                          __/@@@/
+    `-\@@@@@\__                                              __/@@@@@/-'
+        `-\@@@@@@@\__                                  __/@@@@@@@/-'
+            `-\@@@@@@@@@\__                      __/@@@@@@@@@/-'
+                `-\@@@@@@@@@@@\              /@@@@@@@@@@@/-'
+                 __/@@@@@@@@/-'              `-\@@@@@@@@\__
+             __/@@@@@@@@@@@\__                __/@@@@@@@@@@@\__
+                `-\@@@@@@@@@@@@\__        __/@@@@@@@@@@@@/-'
+                    `-\@@@@@@@@@@@@\__ __/@@@@@@@@@@@@/-'
+                        `-\@@@@@@@@@@@@@@@@@@@@@@/-'
+                            ./@@@@@@@@@@@@@@@@\.
+                        .-/@@@@@@@@@/--\@@@@@@@@@\-.
+                    .-/@@@@@@@@/-'        `-\@@@@@@@@\-.
+                .-/@@@@@@@/-'                  `-\@@@@@@@\-.
+            .-/@@@@@@/-'                            `-\@@@@@@\-.
+        .-/@@@@/-'                                        `-\@@@@\-.
+    .-/@@@/-'                                                  `-\@@@\-.
+ .-/@@/-'                                                          `-\@@\-.
+```
+
 # The Cyber Seal Report
 
-Source for [cybersealreport.com](https://cybersealreport.com): a static [Hugo](https://gohugo.io) site deployed as a Cloudflare Worker (static assets) on every push to `main`.
+Every security story has a part nobody explains.
+
+I'm Jack McCullough. I write [The Cyber Seal Report](https://cybersealreport.com). I dig into cybersecurity stories, follow the evidence, and explain what I find in plain English. Every article is human-written, not AI-generated.
+
+This repo is the whole site. The articles, the design, the build, and the security settings all live here in the open.
+
+## What's on the site
+
+- **Articles.** Stories and analysis, published every other Tuesday.
+- **Investigations.** Scans and vulnerability reports from my own lab, with the data behind them.
+- **Newsletter.** New research by email. Sign up at [cybersealreport.com](https://cybersealreport.com).
+- **RSS.** Every article and investigation at [/index.xml](https://cybersealreport.com/index.xml).
+
+## How it's built
+
+The site is static. There's no server, no database, and no login to attack.
+
+| Piece | What I use |
+|---|---|
+| Site generator | [Hugo](https://gohugo.io) extended, 0.146 or newer |
+| Hosting | Cloudflare Workers static assets |
+| Deploys | Every push to `main` builds and publishes in about a minute |
+| Writing | [Obsidian](https://obsidian.md). The repo doubles as my vault. |
+| Newsletter | Kit |
+| Analytics | Cloudflare Web Analytics. No cookies. Off until a token is set. |
+
+## Security choices
+
+I write about security. The site should hold up to the same scrutiny.
+
+- **Strict Content Security Policy.** Scripts, styles, fonts, and images only load from this site. The one exception is Cloudflare's cookieless analytics script. The rules live in `static/_headers`.
+- **No inline scripts or styles.** Charts, filters, and severity bars use classes and SVG. Nothing needs the CSP loosened.
+- **Image metadata stripped.** I drop original photos into a post. The site only publishes resized WebP copies with GPS and camera data removed. The originals never go online.
+- **Investigation data stays private.** CSV files behind an investigation never get published. The page only shows what the report blocks render.
+- **Drafts never reach GitHub.** This repo is public. Unfinished posts live in `drafts/`, which Git ignores.
+- **Pinned deploy tooling.** Wrangler is locked to an exact version in `package.json` and `package-lock.json`. Dependabot opens a PR when a new version ships. I read the release notes before I merge.
+- **No personal email in commits.** Every commit uses my GitHub no-reply address.
+
+Found a problem? Email me at jack@cybersealreport.com.
+
+## Run it locally
+
+You need Hugo extended, version 0.146 or newer.
+
+```bash
+git clone https://github.com/JMcCullough-git/cybersealreport.com.git
+cd cybersealreport.com
+hugo server
+```
+
+Open http://localhost:1313. Node isn't needed to preview the site. Cloudflare's build installs it for deploys only.
+
+## How I publish
+
+1. **New draft.** In Obsidian, the **New article** or **New investigation** template creates a note in `drafts/`.
+2. **Write.** I fill in the properties, write the story, and drag in screenshots. A caption under an image becomes a numbered "Fig. N".
+3. **Publish.** The **Publish draft** template moves the folder into `content/`.
+4. **Sync.** Obsidian Git commits and pushes. Cloudflare builds and goes live.
+
+The full syntax lives in two cheatsheets. One covers articles. The other covers investigations.
+
+- `obsidian/Writing cheatsheet.md`
+- `content/investigations/Investigations cheatsheet.md`
+
+## Repo map
+
+| Path | What's in it |
+|---|---|
+| `content/posts/` | Published articles, one folder each |
+| `content/investigations/` | Published investigations and their data files |
+| `layouts/` | Hugo templates, render hooks, and report blocks |
+| `assets/css/main.css` | The whole stylesheet |
+| `static/` | Fonts, icons, scripts, and security headers |
+| `obsidian/` | Writing templates and the article cheatsheet |
+| `hugo.toml` | Site settings, menus, and newsletter config |
+| `wrangler.jsonc` | Tells Cloudflare to serve the `public/` folder Hugo builds |
 
 ## Cloudflare build settings
 
-Workers & Pages → **cyberseal** → Settings → Build:
+These live under **Workers & Pages > cyberseal > Settings > Build**.
 
 | Setting | Value |
 |---|---|
 | Build command | `npm ci && hugo --minify` |
 | Deploy command | `npx --no-install wrangler deploy` |
-| Build variable | `HUGO_VERSION` = `0.167.0` (under **Build** variables, not the Worker's runtime variables) |
+| Build variable | `HUGO_VERSION` = `0.167.0` |
 
-`wrangler.jsonc` tells Wrangler to upload the `public/` folder Hugo produces. Keep the `name` in it matching the Worker's name in Cloudflare.
+Set `HUGO_VERSION` under the **Build** variables. The Worker's runtime variables won't work. Without it, Cloudflare falls back to an older default Hugo.
 
-### Pinned deploy tooling
+## Credits
 
-Wrangler is pinned to an exact version in `package.json`, and `package-lock.json` locks it and every dependency to known hashes. `npm ci` installs exactly that set, and `--no-install` makes `npx` fail instead of quietly downloading the newest Wrangler from npm. A compromised or breaking Wrangler release can't reach a deploy until I merge it.
+The fonts are Bricolage Grotesque, Public Sans, and JetBrains Mono. All three are self-hosted under the SIL Open Font License.
 
-To update Wrangler: Dependabot (`.github/dependabot.yml`) opens a PR each week a new version is out. I check the [release notes](https://github.com/cloudflare/workers-sdk/releases), then merge. To bump by hand: `npm install --save-exact wrangler@<version>` and commit both files.
-
-`node_modules/` is gitignored, and writing posts never needs it; only Cloudflare's build installs it.
-
-The site needs Hugo **extended, 0.146 or newer** (it uses the `layouts/_partials` folder layout). If `HUGO_VERSION` isn't set, Cloudflare falls back to its default Hugo, which works but is older.
-
-## Write a post (Obsidian)
-
-The repo doubles as an Obsidian vault. Open the repo folder in Obsidian and write with normal Obsidian features; the site renders them directly.
-
-**One-time setup:** clone the repo, open the folder as a vault in Obsidian, turn on community plugins, and install **Templater** and **Git** (settings for both are already in `.obsidian/`).
-
-**Commit identity (every device):** this repo is public, so every commit's author email is public too. Before the first commit from a new device, I set the vault to my GitHub no-reply address:
-
-```bash
-git config user.email "JMcCullough-git@users.noreply.github.com"
-git config user.name "Jack McCullough"
-```
-
-I run these in the repo folder (not `--global`) so other repos keep their own identity. Obsidian Git commits with this config. Backstop: GitHub → Settings → Emails has **Keep my email addresses private** and **Block command line pushes that expose my email** turned on, so a push with a personal address gets rejected instead of published.
-
-**Each article:**
-
-1. `Ctrl + N` for a blank note, then the **<%** Templater icon → **New article** → type the title. It turns the note into `drafts/posts/<title>/index.md`.
-2. Write. Fill in `dek` (one-sentence hook) and `tags` in Properties. **The first tag is the red category pill.**
-3. Drag screenshots into the note. They land in the article's folder. Type a caption between the `[ ]` to get a numbered "Fig. N".
-4. Rename the lead image to `cover` (or type its file name in the `cover` property).
-5. **<%** icon → **Publish draft**. It moves the folder to `content/posts/` and unticks `draft`. Then **Git: Commit-and-sync**. Cloudflare publishes in about a minute.
-
-### Drafts
-
-The repo is public, so anything committed is readable on GitHub, even with `draft: true`. Drafts live in `drafts/posts/` and `drafts/investigations/` instead, and `drafts/` is gitignored: Commit-and-sync never pushes it, and Hugo never builds it (it's outside `content/`). The **New article** / **New investigation** templates create notes there; the **Publish draft** template (`obsidian/templates/Publish draft.md`) moves a finished one into `content/` with its images and data files and unticks `draft`.
-
-The trade-off: drafts don't sync between devices through GitHub. I finish a draft on the device where I started it, or copy the folder over myself.
-
-**Gotcha:** if `.gitignore` is ever missing `/drafts/` (an old clone, a bad merge), the next Commit-and-sync publishes every draft to GitHub. Before syncing on a new device I check that `git check-ignore drafts/x` prints `drafts/x`.
-
-`obsidian/Writing cheatsheet.md` has the full syntax: `> [!quote]` pull quotes, `> [!note]` / `> [!disclosure]` callouts, code blocks with `{title="file.sh"}`, and tags.
-
-Images are published only as resized WebP copies with EXIF/GPS metadata stripped; the original files you drop in are never published.
-
-The older Hugo shortcodes (`{{< pullquote >}}`, `{{< callout >}}`, `{{< figure >}}`) still work if you write outside Obsidian.
-
-## Home page
-
-Lead story = the newest post with `featured: true`, otherwise the newest post. The next post sits beside it; older posts are on the Articles page. Posts with `hideFromHome: true` are skipped on the home page only.
-
-## Site settings (`hugo.toml`)
-
-- `params.contactEmail` / `params.pgpFingerprint`: About page contact block (empty hides it).
-- `params.topics`: the "What I cover" tags on the About page.
-- `params.newsletter.action`: your newsletter provider's form URL. While empty, the signup card shows "Signups open soon" and can't be submitted.
-- `params.footerLinks`: footer links; a link with an empty `url` is hidden.
-- `menus.main`: header navigation.
-
-The About page text lives in `content/about.md`; the portrait is `static/images/jack.jpg`.
-
-## Notes
-
-- Fonts (Bricolage Grotesque, Public Sans, JetBrains Mono) are self-hosted in `static/fonts/` under the SIL Open Font License.
-- Visitor analytics use Cloudflare Web Analytics (cookieless), switched on by `params.analytics.cloudflareToken` in `hugo.toml`. It's the site's only third-party script; the CSP allows `static.cloudflareinsights.com` and `cloudflareinsights.com` for it.
-- `robots.txt` points search engines at `sitemap.xml` (`layouts/robots.txt`).
-- `static/_headers` sets a strict Content Security Policy and other security headers (Cloudflare applies it to the static assets). If you add third-party embeds or scripts later, update the CSP or they'll be blocked.
-- Light theme only; dark mode wasn't part of the design.
+Read the stories at [cybersealreport.com](https://cybersealreport.com). The code is here if you want to see how it works.
