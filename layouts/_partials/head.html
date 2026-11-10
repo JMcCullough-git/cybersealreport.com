@@ -7,9 +7,17 @@
 {{- $desc := .Params.dek | default .Description | default site.Params.description }}
 <meta name="description" content="{{ $desc | plainify }}">
 <meta name="author" content="{{ site.Params.author }}">
+{{- /* The 404 page is served at every missing URL, so it gets no canonical and is never indexed. */}}
+{{- if eq .Kind "404" }}
+<meta name="robots" content="noindex">
+{{- else }}
 <link rel="canonical" href="{{ .Permalink }}">
 {{- if .Params.noindex }}
 <meta name="robots" content="noindex, nofollow">
+{{- else if in (slice "taxonomy" "term") .Kind }}
+{{- /* Tag pages are thin (a post or two each): keep them out of Google but let it follow the links to articles. */}}
+<meta name="robots" content="noindex, follow">
+{{- end }}
 {{- end }}
 
 <meta property="og:site_name" content="{{ site.Title }}">
