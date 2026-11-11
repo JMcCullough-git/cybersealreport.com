@@ -2,7 +2,8 @@
   Images dropped into a post (Obsidian drag-and-drop or paste):
     ![Caption shown under the image](evidence-1.png)
   An image on its own line becomes an evidence figure: resized to WebP, numbered "Fig. N"
-  when it has a caption, and linked to the full-size file. Inline images stay inline.
+  when it has a caption, and linked to the full-size file. Clicking it opens the image viewer
+  (static/js/lightbox.js); without JavaScript the link opens the file. Inline images stay inline.
   File names with spaces (Obsidian's "Pasted image 2026….png") work as-is.
 */ -}}
 {{- $u := urls.Parse .Destination }}
@@ -26,8 +27,9 @@
 {{- end }}
 {{- if .IsBlock }}
   {{- $caption := .Title | default .Text }}
+  {{- .Page.Store.Set "hasLightbox" true }}
   <figure class="evidence">
-    <a href="{{ $full }}"><img src="{{ $src }}"{{ with $w }} width="{{ . }}" height="{{ $h }}"{{ end }} alt="{{ $alt }}" loading="lazy"></a>
+    <a class="evidence__zoom" href="{{ $full }}" aria-label="View full size{{ with $alt }}: {{ . }}{{ end }}"><img src="{{ $src }}"{{ with $w }} width="{{ . }}" height="{{ $h }}"{{ end }} alt="{{ $alt }}" loading="lazy"></a>
     {{- if $caption }}
       {{- .Page.Store.Add "figNum" 1 }}
     <figcaption><span class="fig-num">Fig. {{ .Page.Store.Get "figNum" }}</span>{{ $caption }}</figcaption>
