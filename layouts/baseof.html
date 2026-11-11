@@ -20,6 +20,9 @@
 {{- if .Store.Get "hasFindings" }}
 <script src="{{ "js/findings.js" | relURL }}" defer></script>
 {{- end }}
+{{- if .Store.Get "hasLightbox" }}
+<script src="{{ "js/lightbox.js" | relURL }}" defer></script>
+{{- end }}
 {{- if .Store.Get "hasRanking" }}
 <script src="{{ "js/ranking-table.js" | relURL }}" defer></script>
 {{- end }}
