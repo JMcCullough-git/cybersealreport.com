@@ -35,9 +35,9 @@ It's easy to hear people complain about the job market but rarely do you see peo
 
 That's why its a breath of fresh air when someone like Steven finds new ways to stand out. Not just doing what the other 243 applicants chose to do and send a two page pdf. 
 
-As Steven put it, "Anyone can generate a clean bullet point. Not everyone can hand you a device that does something." 
+![](03-figs1-2-applicant-volume.html)
 
-The idea orginated from 
+As Steven put it, "Anyone can generate a clean bullet point. Not everyone can hand you a device that does something." 
 ## Let's talk numbers
 
 
