@@ -59,6 +59,8 @@ Dark Falls is publicly presented as a game art studio. The indictment calls it a
 
 Trey Nolte has somehow miraculously not been charged and I have no clue why. It should be clear that this is all alleged. Nevertheless, the indictment if true is pretty damning. 
 
+**Update, Nov. 11, 2026.** Trey Nolte has reportedly been charged. When I first wrote this, he was named in the indictment but not charged. Two outlets now say federal prosecutors in Ohio have filed charges against him. The reports differ on the details, and I haven’t seen the court filing yet. I’ll update this post when I do. 
+
 ![](laptop-farm-network-map.jpg)
 
 Laptops from the US companies came to his Ohio house. Some straight from the companies to his door. Others came through Americans like the middleman, Bostelle. Workers in Dandong remotely logged in from overseas into the laptops in his Ohio home. Nolte kept in touch with them by text, email, and Discord.
