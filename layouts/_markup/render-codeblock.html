@@ -9,7 +9,7 @@
   block name instead of a language: stats, tools, glance, host / entity / cards, table,
   findings, priority, timeline. See content/investigations/Investigations cheatsheet.md.
 */ -}}
-{{- $blocks := dict "stats" "stats" "tools" "tools" "glance" "glance" "host" "cards" "entity" "cards" "cards" "cards" "table" "table" "findings" "findings" "priority" "priority" "next-steps" "priority" "timeline" "timeline" }}
+{{- $blocks := dict "stats" "stats" "tools" "tools" "glance" "glance" "host" "cards" "entity" "cards" "cards" "cards" "table" "table" "findings" "findings" "priority" "priority" "next-steps" "priority" "timeline" "timeline" "chart" "chart" }}
 {{- with index $blocks (lower .Type) }}
 {{- partial (printf "report/%s.html" .) (dict "page" $.Page "text" $.Inner "attrs" $.Attributes) }}
 {{- else }}

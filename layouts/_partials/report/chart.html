@@ -1,0 +1,8 @@
+{{- /*
+  ```chart   →   an interactive chart with options the image syntax can't set.
+    file: payments-chart.html
+    height: 520                  fixed frame height in pixels (otherwise it fits itself)
+    caption: Ransomware payments by year
+*/ -}}
+{{- $o := (index (partial "report/parse.html" .) 0).opts }}
+{{- partial "chart-embed.html" (dict "page" .page "file" ($o.file | default "") "caption" ($o.caption | default "") "height" (int ($o.height | default 0)) "block" true) }}

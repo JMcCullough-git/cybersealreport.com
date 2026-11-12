@@ -53,7 +53,8 @@ The site is static. There's no server, no database, and no login to attack.
 I write about security. The site should hold up to the same scrutiny.
 
 - **Strict Content Security Policy.** Scripts, styles, fonts, and images only load from this site. The one exception is Cloudflare's cookieless analytics script. The rules live in `static/_headers`.
-- **No inline scripts or styles.** Charts, filters, and severity bars use classes and SVG. Nothing needs the CSP loosened.
+- **No inline scripts or styles.** Filters and severity bars use classes and SVG. Nothing on the main pages needs the CSP loosened.
+- **Interactive charts are sandboxed.** A chart's own code runs in a locked frame with no access to the site. Each chart may only use code inside its own file. The build warns me if one tries to load anything from another site.
 - **Image metadata stripped.** I drop original photos into a post. The site only publishes resized WebP copies with GPS and camera data removed. The originals never go online.
 - **Investigation data stays private.** CSV files behind an investigation never get published. The page only shows what the report blocks render.
 - **Drafts never reach GitHub.** This repo is public. Unfinished posts live in `drafts/`, which Git ignores.

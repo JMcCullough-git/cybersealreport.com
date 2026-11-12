@@ -5,9 +5,14 @@
   when it has a caption, and linked to the full-size file. Clicking it opens the image viewer
   (static/js/lightbox.js); without JavaScript the link opens the file. Inline images stay inline.
   File names with spaces (Obsidian's "Pasted image 2026….png") work as-is.
+  An .html file (![Caption](chart.html)) becomes an interactive chart: see _partials/chart-embed.html.
 */ -}}
 {{- $u := urls.Parse .Destination }}
 {{- $path := strings.TrimPrefix "./" $u.Path }}
+{{- /* An .html file in image syntax is an interactive chart: ![Caption](chart.html) */}}
+{{- if and (not $u.IsAbs) (eq (lower (path.Ext $path)) ".html") }}
+  {{- partial "chart-embed.html" (dict "page" .Page "file" (urls.Parse $path).Path "caption" (.Title | default .Text) "block" .IsBlock) }}
+{{- else }}
 {{- $img := false }}
 {{- if not $u.IsAbs }}{{ $img = .Page.Resources.Get $path }}{{ end }}
 {{- $alt := .PlainText }}
@@ -38,3 +43,4 @@
 {{- else -}}
   <img class="inline-img" src="{{ $src }}"{{ with $w }} width="{{ . }}" height="{{ $h }}"{{ end }} alt="{{ $alt }}" loading="lazy">
 {{- end -}}
+{{- end }}

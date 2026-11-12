@@ -17,6 +17,9 @@
 {{- with site.Params.analytics.cloudflareToken }}
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{{ dict "token" . | jsonify }}"></script>
 {{- end }}
+{{- if .Store.Get "hasCharts" }}
+<script src="{{ "js/charts.js" | relURL }}" defer></script>
+{{- end }}
 {{- if .Store.Get "hasFindings" }}
 <script src="{{ "js/findings.js" | relURL }}" defer></script>
 {{- end }}
