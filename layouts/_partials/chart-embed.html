@@ -12,6 +12,7 @@
     no access to the site, cookies, forms, popups or top-level navigation.
   - Warns at build time if the chart tries to load anything from another site. Charts must
     be self-contained; the policy blocks outside files, so they would break on the live site.
+    The site's own fonts (https://cybersealreport.com/fonts/…) are allowed.
   Articles only (content/posts). Elsewhere it shows an error box and a build warning.
 */ -}}
 {{- $page := .page }}
@@ -37,6 +38,11 @@
       `(?i)(?:fetch|import)\(\s*["'](?:https?:)?//[^"'\s]+` }}
     {{- $outside = $outside | append (findRE . $raw 3) }}
   {{- end }}
+  {{- /* The site's own fonts are fine: the chart policy allows them. */}}
+  {{- $siteHost := (urls.Parse site.BaseURL).Host }}
+  {{- $kept := slice }}
+  {{- range $outside }}{{ if not (strings.Contains . (printf "//%s/fonts/" $siteHost)) }}{{ $kept = $kept | append . }}{{ end }}{{ end }}
+  {{- $outside = $kept }}
   {{- with $outside }}
     {{- warnf "Chart %q in %s loads files from another site, which the chart sandbox blocks. Ask for a self-contained file (all CSS and JS inline). Found: %s" $file $page.File.Path (delimit (first 3 .) " | ") }}
   {{- end }}

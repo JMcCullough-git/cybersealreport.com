@@ -139,7 +139,12 @@ caption: Ransomware payments by year
 ```text
 Create one self-contained HTML file containing a single chart of [DATA/TOPIC].
 Rules:
-- All CSS and JavaScript inline; no external libraries, CDNs, fonts, or images.
+- All CSS and JavaScript inline; no external libraries, CDNs, or images.
+- Load fonts only with these @font-face rules (woff2):
+  "Public Sans" 400 https://cybersealreport.com/fonts/public-sans-400.woff2
+  "Public Sans" 600 https://cybersealreport.com/fonts/public-sans-600.woff2
+  "JetBrains Mono" 400 https://cybersealreport.com/fonts/jetbrains-mono-400.woff2
+  "JetBrains Mono" 500 https://cybersealreport.com/fonts/jetbrains-mono-500.woff2
 - Fill 100% of the page width; let the height follow the chart (don't use 100vh); transparent background.
 - No title or caption (my site adds those).
 - Colors: text #2a2a28, axes/gridlines #e4e4e0, labels #55554f.
@@ -149,7 +154,7 @@ Rules:
 - Include a <table> fallback hidden visually but available to screen readers.
 ```
 
-The site loads Public Sans and JetBrains Mono into the chart for me, so the fonts match without the chart loading anything.
+The fonts come from my own site, so the chart looks right in the Claude Design or Gemini preview too. The build allows them. Anything else from another site still gets blocked and flagged. If a chart skips the font rules, the site adds them when it publishes anyway.
 
 ## Images for emails and other uses
 
