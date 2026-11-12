@@ -1,0 +1,100 @@
+{{- /*
+  Interactive HTML chart in an article. Used by the image hook (![Caption](chart.html))
+  and by the ```chart block. Context: dict "page" "file" "caption" "height" "block".
+
+  What it does:
+  - Reads the chart's HTML file from the article folder and publishes a copy at
+    /embeds/<article>/<file>.html. Every other file in the folder stays private.
+  - Adds three things to that copy: its own Content-Security-Policy (the site's strict
+    policy is removed for /embeds/* in static/_headers), the site fonts, and a tiny script
+    that reports the chart's height so the frame fits.
+  - Shows it in a sandboxed iframe: the chart's scripts run, but in an opaque origin with
+    no access to the site, cookies, forms, popups or top-level navigation.
+  - Warns at build time if the chart tries to load anything from another site. Charts must
+    be self-contained; the policy blocks outside files, so they would break on the live site.
+    The site's own fonts (https://cybersealreport.com/fonts/…) are allowed.
+  Articles only (content/posts). Elsewhere it shows an error box and a build warning.
+*/ -}}
+{{- $page := .page }}
+{{- $file := strings.TrimPrefix "./" (strings.TrimSpace .file) }}
+{{- $caption := .caption | default "" }}
+{{- $height := .height | default 0 }}
+{{- $res := $page.Resources.Get $file }}
+{{- if ne $page.Section "posts" }}
+  {{- warnf "Chart %q in %s: interactive charts only work in articles (content/posts)." $file $page.File.Path }}
+<p class="r-error">Interactive charts only work in articles. "{{ $file }}" isn't shown here.</p>
+{{- else if not $res }}
+  {{- warnf "Chart %q not found next to %s" $file $page.File.Path }}
+<p class="r-error">Can't find "{{ $file }}" in this article's folder.</p>
+{{- else }}
+  {{- $raw := $res.RawContent }}
+
+  {{- /* Build check: anything loaded from another site. */}}
+  {{- $outside := slice }}
+  {{- range slice
+      `(?i)<(?:script|link|img|iframe|source|video|audio|embed|object)\b[^>]*?\b(?:src|href|data)\s*=\s*["']?\s*(?:https?:)?//[^"'\s>]+`
+      `(?i)@import\s+(?:url\()?\s*["']?(?:https?:)?//[^"'\s)]+`
+      `(?i)url\(\s*["']?(?:https?:)?//[^"'\s)]+`
+      `(?i)(?:fetch|import)\(\s*["'](?:https?:)?//[^"'\s]+` }}
+    {{- $outside = $outside | append (findRE . $raw 3) }}
+  {{- end }}
+  {{- /* The site's own fonts are fine: the chart policy allows them. */}}
+  {{- $siteHost := (urls.Parse site.BaseURL).Host }}
+  {{- $kept := slice }}
+  {{- range $outside }}{{ if not (strings.Contains . (printf "//%s/fonts/" $siteHost)) }}{{ $kept = $kept | append . }}{{ end }}{{ end }}
+  {{- $outside = $kept }}
+  {{- with $outside }}
+    {{- warnf "Chart %q in %s loads files from another site, which the chart sandbox blocks. Ask for a self-contained file (all CSS and JS inline). Found: %s" $file $page.File.Path (delimit (first 3 .) " | ") }}
+  {{- end }}
+
+  {{- /* The copy that gets published. */}}
+  {{- $fontBase := "fonts/" | absURL }}
+  {{- $csp := printf "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src %s data:; connect-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'" (strings.TrimSuffix "/" ($fontBase | replaceRE `^(https?://[^/]+).*$` "$1")) }}
+  {{- $head := printf `<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="%s"><meta name="robots" content="noindex">` $csp }}
+  {{- $fonts := printf `<style>@font-face{font-family:"Public Sans";src:url(%spublic-sans-400.woff2) format("woff2");font-weight:400;font-display:swap}@font-face{font-family:"Public Sans";src:url(%spublic-sans-600.woff2) format("woff2");font-weight:600 700;font-display:swap}@font-face{font-family:"JetBrains Mono";src:url(%sjetbrains-mono-400.woff2) format("woff2");font-weight:400;font-display:swap}@font-face{font-family:"JetBrains Mono";src:url(%sjetbrains-mono-500.woff2) format("woff2");font-weight:500 700;font-display:swap}</style>` $fontBase $fontBase $fontBase $fontBase }}
+  {{- /* Reports the content height to the article. It measures the page box, so off-layout
+         extras (tooltips, visually hidden tables) don't add empty space. It only re-measures
+         when the width changes, so a chart sized to 100% of the frame can't keep growing itself. */}}
+  {{- $resize := `<script>(function(){var w=-1;function send(force){var nw=window.innerWidth;if(!force&&nw===w)return;w=nw;var h=Math.ceil(document.documentElement.getBoundingClientRect().height);if(h>0)parent.postMessage({cyberseal:"chart-height",height:h},"*")}window.addEventListener("load",function(){send(true);setTimeout(function(){send(true)},400)});window.addEventListener("resize",function(){send(false)})})();</script>` }}
+  {{- $out := $raw }}
+  {{- if findRE `(?i)<head[^>]*>` $out 1 }}
+    {{- $out = replaceRE `(?i)(<head[^>]*>)` (printf "${1}%s" $head) $out 1 }}
+  {{- else if findRE `(?i)<html[^>]*>` $out 1 }}
+    {{- $out = replaceRE `(?i)(<html[^>]*>)` (printf "${1}<head>%s</head>" $head) $out 1 }}
+  {{- else }}
+    {{- $out = printf "<!doctype html><head><meta charset=\"utf-8\">%s</head>%s" $head $out }}
+  {{- end }}
+  {{- /* Site fonts go at the end of <head>, so the chart's own charset tag stays near the top. */}}
+  {{- if findRE `(?i)</head>` $out 1 }}
+    {{- $out = replaceRE `(?i)(</head>)` (printf "%s${1}" $fonts) $out 1 }}
+  {{- else }}
+    {{- $out = printf "%s%s" $fonts $out }}
+  {{- end }}
+  {{- if findRE `(?i)</body>` $out 1 }}
+    {{- $out = replaceRE `(?i)(</body>)` (printf "%s${1}" $resize) $out 1 }}
+  {{- else }}
+    {{- $out = printf "%s%s" $out $resize }}
+  {{- end }}
+  {{- $name := path.Base $file | urlize }}
+  {{- $embed := resources.FromString (printf "embeds/%s/%s" $page.File.ContentBaseName $name) $out }}
+
+  {{- $page.Store.Set "hasCharts" true }}
+  {{- $page.Store.Add "chartNum" 1 }}
+  {{- $id := printf "chart-%d" ($page.Store.Get "chartNum") }}
+  {{- $title := $caption | default (path.BaseName $file | replaceRE `[-_]+` " ") }}
+  {{- if .block }}
+  <figure class="chart" id="{{ $id }}">
+  {{- end }}
+    <iframe class="chart__frame" src="{{ $embed.RelPermalink }}" title="{{ $title }}"
+      sandbox="allow-scripts" referrerpolicy="no-referrer" loading="lazy"
+      height="{{ $height | default 440 }}"{{ if $height }} data-fixed-height{{ end }}></iframe>
+  {{- if .block }}
+    {{- if $caption }}
+      {{- $page.Store.Add "figNum" 1 }}
+    <figcaption><span class="fig-num">Fig. {{ $page.Store.Get "figNum" }}</span>{{ $caption }}</figcaption>
+    {{- end }}
+    {{- /* Hidden on the site. Feed readers ignore the stylesheet and frames, so they show this link. */}}
+    <p class="chart__feed-link"><a href="{{ $page.Permalink }}#{{ $id }}">View the interactive chart →</a></p>
+  </figure>
+  {{- end }}
+{{- end }}
