@@ -108,6 +108,49 @@ The title shows in the dark bar above the code, next to a Copy button. Without `
 - File names with spaces (like Obsidian's `Pasted image …png`) are fine.
 - The site publishes resized copies with **GPS and camera metadata stripped**. The original files never go online.
 
+## Interactive charts
+
+I drag a chart's HTML file into the article, the same way I add an image.
+
+```markdown
+![Ransomware payments by year](payments-chart.html)
+```
+
+- The text in the brackets becomes the "Fig. N" caption.
+- The chart sizes itself to fit, on a computer and on a phone.
+- Hover tooltips and filters work. The chart runs in a locked sandbox, so its code can't touch the rest of the site.
+- Charts only work in articles. In an investigation they show a red error box.
+- RSS readers can't run charts. They get a "View the interactive chart" link instead.
+
+To force a height, I use the block version.
+
+````markdown
+```chart
+file: payments-chart.html
+height: 520
+caption: Ransomware payments by year
+```
+````
+
+**The rule that matters.** A chart must be one self-contained file. All of its code and styles live inside it. If it loads a library from another site, the sandbox blocks it and the chart shows up blank. Hugo prints a warning that names the file, so I catch it before publishing.
+
+**The prompt I paste into Claude Design or Gemini.** I swap in my data where it says `[DATA/TOPIC]`.
+
+```text
+Create one self-contained HTML file containing a single chart of [DATA/TOPIC].
+Rules:
+- All CSS and JavaScript inline; no external libraries, CDNs, fonts, or images.
+- Fill 100% of the page width; let the height follow the chart (don't use 100vh); transparent background.
+- No title or caption (my site adds those).
+- Colors: text #2a2a28, axes/gridlines #e4e4e0, labels #55554f.
+  Main series #d02c2b, secondary #141414, tertiary #ac1a1c, highlight fill #ffe6e2.
+- Fonts: "Public Sans", sans-serif for text; "JetBrains Mono", monospace for numbers and axis labels.
+- Hover tooltips with exact values; readable at 360px wide.
+- Include a <table> fallback hidden visually but available to screen readers.
+```
+
+The site loads Public Sans and JetBrains Mono into the chart for me, so the fonts match without the chart loading anything.
+
 ## Images for emails and other uses
 
 For images outside an article, like a logo for a Kit email: anything in the `static` folder goes live at the same path, so `static/images/my-file.png` becomes `https://cybersealreport.com/images/my-file.png`.

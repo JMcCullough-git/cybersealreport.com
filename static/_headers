@@ -9,5 +9,16 @@
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
+  # Charts run in a sandboxed (opaque-origin) frame, so loading the site fonts is a cross-origin request.
+  Access-Control-Allow-Origin: *
+
+# Interactive charts (layouts/_partials/chart-embed.html). Each chart file carries its own
+# Content-Security-Policy in a <meta> tag: inline scripts and styles only, nothing from other
+# sites. The site-wide policy and frame blocking are removed here so articles can frame them,
+# and the article's iframe sandbox keeps the chart's scripts away from the site.
+/embeds/*
+  ! Content-Security-Policy
+  ! X-Frame-Options
+  X-Robots-Tag: noindex
 /css/*
   Cache-Control: public, max-age=31536000, immutable

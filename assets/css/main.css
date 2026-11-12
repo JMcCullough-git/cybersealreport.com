@@ -870,3 +870,9 @@ html.lightbox-open { overflow: hidden; }
   .r-findings__label { width: 100%; }
 }
 .r-card__error { margin: 16px 22px 0; }
+
+/* Interactive charts in articles: drawn straight on the page, no frame or card. */
+.chart { margin: 36px 0; }
+.chart__frame { display: block; width: 100%; border: 0; background: transparent; color-scheme: light; }
+.chart figcaption { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.chart__feed-link { display: none; }
