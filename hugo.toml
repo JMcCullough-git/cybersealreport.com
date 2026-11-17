@@ -97,3 +97,9 @@ ignoreFiles = ['\.obsidian', '\.trash', '(^|/)Untitled( \d+)?\.md$', 'Investigat
     name = "Archive"
     pageRef = "/archive"
     weight = 30
+
+# Hugo 0.167+ refuses .html files in content/ by default. Interactive charts are .html files
+# inside article folders (see layouts/_partials/chart-embed.html), so allow HTML content.
+# Org-mode stays blocked, as in Hugo's default.
+[security]
+  allowContent = ['! ^text/org$']
