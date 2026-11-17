@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Applicant volume chart</title>
+<title>Applications per job chart</title>
 <style>
   :root {
     --text: #2a2a28; --rule: #e4e4e0; --label: #55554f;
@@ -12,7 +12,7 @@
   }
   html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; }
   body { color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
-  #chart { position: relative; width: 100%; height: 100%; min-height: 260px; }
+  #chart { position: relative; width: 100%; height: 100%; min-height: 220px; }
   #chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
   .panel-title { font: 600 13px var(--sans); fill: var(--text); }
   .chg { font: 500 12px var(--mono); fill: var(--tertiary); }
@@ -43,17 +43,15 @@
 </style>
 </head>
 <body>
-<div id="chart" role="img" aria-label="Two bar charts. Applications per job in North America rose from 115 in 2022 to 244 in 2025. Applicants per entry-level opening in the US rose from 29 in May 2024 to 36 in May 2025."></div>
+<div id="chart" role="img" aria-label="Bar chart. Applications per job in North America more than doubled, from 115 in 2022 to 244 in 2025."></div>
 <div id="tip" role="status" aria-live="polite"></div>
 
 <table class="sr-only">
-  <caption>Applicant volume: applications per job (Greenhouse) and applicants per entry-level opening (iCIMS)</caption>
+  <caption>Applications per job, North America (Greenhouse)</caption>
   <thead><tr><th scope="col">Measure</th><th scope="col">Period</th><th scope="col">Value</th><th scope="col">Source</th></tr></thead>
   <tbody>
     <tr><td>Applications per job, North America</td><td>2022</td><td>115</td><td>Greenhouse, March 2026</td></tr>
     <tr><td>Applications per job, North America</td><td>2025</td><td>244</td><td>Greenhouse, March 2026</td></tr>
-    <tr><td>Applicants per entry-level opening, US</td><td>May 2024</td><td>29</td><td>iCIMS, June 2025</td></tr>
-    <tr><td>Applicants per entry-level opening, US</td><td>May 2025</td><td>36</td><td>iCIMS, June 2025</td></tr>
   </tbody>
 </table>
 
@@ -61,11 +59,8 @@
 (function () {
   var panels = [
     { title: "Applications per job, North America", change: "2.1×", max: 260, ticks: [0, 100, 200],
-      unit: "applications per job", source: "Greenhouse, 640M+ applications",
-      data: [{ label: "2022", v: 115, now: false }, { label: "2025", v: 244, now: true }] },
-    { title: "Applicants per entry-level opening, US", change: "+22%", max: 40, ticks: [0, 20, 40],
-      unit: "applicants per opening", source: "iCIMS platform data",
-      data: [{ label: "May 2024", v: 29, now: false }, { label: "May 2025", v: 36, now: true }] }
+      unit: "applications per job", source: "Greenhouse, 640M+ applications, 6,000+ companies",
+      data: [{ label: "2022", v: 115, now: false }, { label: "2025", v: 244, now: true }] }
   ];
   var NS = "http://www.w3.org/2000/svg";
   var root = document.getElementById("chart");
@@ -101,8 +96,8 @@
 
   function draw() {
     root.innerHTML = "";
-    var W = root.clientWidth, H = Math.max(root.clientHeight, 260);
-    var stacked = W < 560;
+    var W = root.clientWidth, H = Math.max(root.clientHeight, 220);
+    var stacked = true;
     var svg = el("svg", { viewBox: "0 0 " + W + " " + H, "aria-hidden": "true" }, root);
 
     // legend
@@ -113,7 +108,7 @@
     el("text", { x: 126, y: 12, class: "legend" }, lg, "Latest year");
     var top0 = 30, gap = stacked ? 26 : 40;
     var pw = stacked ? W : (W - gap) / 2;
-    var ph = stacked ? (H - top0 - gap) / 2 : H - top0;
+    var ph = H - top0;
 
     panels.forEach(function (p, i) {
       var ox = stacked ? 0 : i * (pw + gap), oy = top0 + (stacked ? i * (ph + gap) : 0);

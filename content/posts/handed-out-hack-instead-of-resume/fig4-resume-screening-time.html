@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé screening time chart</title>
+<style>
+  :root {
+    --text: #2a2a28; --rule: #e4e4e0; --label: #55554f;
+    --main: #d02c2b; --secondary: #141414; --tertiary: #ac1a1c; --highlight: #ffe6e2;
+    --sans: "Public Sans", sans-serif; --mono: "JetBrains Mono", monospace;
+  }
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; }
+  body { color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+  #chart { position: relative; width: 100%; height: 100%; min-height: 240px; }
+  #chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .tick { font: 400 11px var(--mono); fill: var(--label); }
+  .xlab { font: 400 11.5px var(--mono); fill: var(--label); }
+  .val { font: 500 12px var(--mono); fill: var(--text); }
+  .val.hl { fill: var(--main); }
+  .ann { font: 500 12px var(--mono); fill: var(--tertiary); }
+  .bar { transition: fill 120ms, stroke-width 120ms; }
+  .bar.hl { fill: var(--main); }
+  .bar.base { fill: var(--highlight); stroke: var(--tertiary); stroke-width: 1; }
+  .col { outline: none; cursor: default; }
+  .col:hover .bar.hl, .col:focus .bar.hl, .col.active .bar.hl { fill: var(--tertiary); }
+  .col:hover .bar.base, .col:focus .bar.base, .col.active .bar.base { stroke-width: 2; }
+  .col:focus-visible .hit { stroke: var(--main); stroke-width: 2; }
+  .hit { fill: transparent; }
+  #tip {
+    position: absolute; pointer-events: none; opacity: 0; transition: opacity 120ms;
+    background: var(--secondary); color: #f7f7f5; border-radius: 8px; padding: 8px 10px;
+    font: 400 12px/1.4 var(--sans); max-width: 230px; z-index: 2;
+  }
+  #tip .n { display: block; font: 500 15px var(--mono); color: #ffffff; }
+  #tip .s { display: block; font: 400 10.5px/1.45 var(--mono); color: #d8d8d2; margin-top: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+<div id="chart" role="group" aria-label="Column chart of time spent on an initial résumé screen. Under 10 seconds 1%, 10 to 30 seconds 33%, 30 seconds to 1 minute 47%, 1 to 2 minutes 11%, 2 to 5 minutes 3%, 5 to 10 minutes 4%. 81% spend under one minute."></div>
+<div id="tip" role="status" aria-live="polite"></div>
+
+<table class="sr-only">
+  <caption>Time hiring professionals spend on an initial résumé screen (ResumeGo survey of 418 US recruiters and hiring managers, Jan–Mar 2024)</caption>
+  <thead><tr><th scope="col">Time spent</th><th scope="col">Share of respondents</th></tr></thead>
+  <tbody>
+    <tr><td>Under 10 seconds</td><td>1%</td></tr>
+    <tr><td>10 to 30 seconds</td><td>33%</td></tr>
+    <tr><td>30 seconds to 1 minute</td><td>47%</td></tr>
+    <tr><td>1 to 2 minutes</td><td>11%</td></tr>
+    <tr><td>2 to 5 minutes</td><td>3%</td></tr>
+    <tr><td>5 to 10 minutes</td><td>4%</td></tr>
+    <tr><td>Over 10 minutes</td><td>0%</td></tr>
+    <tr><td>Total under one minute</td><td>81%</td></tr>
+  </tbody>
+</table>
+
+<script>
+(function () {
+  var data = [
+    { short: ["Under", "10 sec"], long: "Under 10 seconds", v: 1, hl: true },
+    { short: ["10–30", "sec"], long: "10 to 30 seconds", v: 33, hl: true },
+    { short: ["30 sec–", "1 min"], long: "30 seconds to 1 minute", v: 47, hl: true },
+    { short: ["1–2", "min"], long: "1 to 2 minutes", v: 11, hl: false },
+    { short: ["2–5", "min"], long: "2 to 5 minutes", v: 3, hl: false },
+    { short: ["5–10", "min"], long: "5 to 10 minutes", v: 4, hl: false }
+  ];
+  var MAX = 50, TICKS = [0, 10, 20, 30, 40, 50];
+  var SRC = "ResumeGo survey, 418 US hiring professionals, Jan–Mar 2024";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.getElementById("chart"), tip = document.getElementById("tip");
+
+  function el(name, attrs, parent, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  // column: square at the baseline, 4px rounded at the top
+  function barPath(x, base, w, h) {
+    var r = Math.min(4, w / 2, h / 2), y = base - h;
+    return "M" + x + "," + base + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+           "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "V" + base + "Z";
+  }
+
+  function showTip(d, colEl) {
+    tip.innerHTML = "<span>" + d.long + "</span><span class=\"n\">" + d.v + "% of respondents</span>" +
+      "<span class=\"s\">" + (d.hl ? "Part of the 81% who spend under a minute<br>" : "") + SRC + "</span>";
+    var box = root.getBoundingClientRect(), r = colEl.querySelector(".bar").getBoundingClientRect();
+    var tw = tip.offsetWidth, th = tip.offsetHeight;
+    var x = r.left - box.left + r.width / 2 - tw / 2;
+    x = Math.max(0, Math.min(x, box.width - tw));
+    var y = r.top - box.top - th - 28;                     // clear the value label
+    if (y < 0) y = Math.min(r.top - box.top + 12, box.height - th);
+    tip.style.left = x + "px"; tip.style.top = y + "px"; tip.style.opacity = 1;
+  }
+  function hideTip() { tip.style.opacity = 0; }
+
+  function draw() {
+    root.innerHTML = "";
+    var W = root.clientWidth, H = Math.max(root.clientHeight, 240);
+    var axisW = 36, top = 44, bottom = 40;
+    var plotX = axisW, plotW = W - axisW, base = H - bottom, plotH = Math.max(base - top, 60);
+    var Y = function (v) { return base - plotH * v / MAX; };
+    var slot = plotW / data.length;
+    var bw = Math.max(18, Math.min(64, slot * 0.6));
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }, root);
+
+    TICKS.forEach(function (t) {
+      el("line", { x1: plotX, y1: Y(t), x2: W, y2: Y(t), stroke: "#e4e4e0", "stroke-width": 1 }, svg);
+      el("text", { x: plotX - 6, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg, t + "%");
+    });
+
+    var xs = [];
+    data.forEach(function (d, i) {
+      var cx = plotX + slot * (i + 0.5); xs.push(cx);
+      var g = el("g", { class: "col", tabindex: 0, role: "img", "aria-label": d.long + ": " + d.v + "% of respondents" }, svg);
+      el("rect", { class: "hit", x: cx - slot / 2 + 1, y: top - 6, width: slot - 2, height: base - top + bottom, rx: 6 }, g);
+      var h = Math.max(plotH * d.v / MAX, 2);
+      el("path", { d: barPath(cx - bw / 2, base, bw, h), class: "bar " + (d.hl ? "hl" : "base") }, g);
+      el("text", { x: cx, y: base - h - 8, "text-anchor": "middle", class: "val" + (d.hl ? " hl" : "") }, g, d.v + "%");
+      d.short.forEach(function (ln, j) {
+        el("text", { x: cx, y: base + 16 + j * 13, "text-anchor": "middle", class: "xlab" }, g, ln);
+      });
+      var on = function () { showTip(d, g); g.classList.add("active"); };
+      var off = function () { hideTip(); g.classList.remove("active"); };
+      g.addEventListener("pointerenter", on);
+      g.addEventListener("pointerleave", off);
+      g.addEventListener("pointerdown", on);   // touch: tap to show
+      g.addEventListener("focus", on);
+      g.addEventListener("blur", off);
+    });
+
+    // bracket over the three under-a-minute columns
+    var x1 = xs[0] - bw / 2, x2 = xs[2] + bw / 2, by = 14;
+    var ann = el("g", { "aria-hidden": "true" }, svg);
+    var label = W < 420 ? "81% < 1 min" : "81% under one minute";
+    var lw = label.length * 7.4 + 12, mx = (x1 + x2) / 2;
+    // bracket drawn in two pieces with a gap for the label (the page background is transparent)
+    el("path", { d: "M" + x1 + "," + (by + 8) + "V" + by + "H" + (mx - lw / 2) +
+                    "M" + (mx + lw / 2) + "," + by + "H" + x2 + "V" + (by + 8),
+                 fill: "none", stroke: "#ac1a1c", "stroke-width": 1.5 }, ann);
+    el("text", { x: mx, y: by + 4, "text-anchor": "middle", class: "ann" }, ann, label);
+  }
+
+  draw();
+  var tm;
+  function redraw() { clearTimeout(tm); tm = setTimeout(draw, 80); }
+  window.addEventListener("resize", redraw);
+  if (window.ResizeObserver) new ResizeObserver(redraw).observe(root);
+})();
+</script>
+</body>
+</html>

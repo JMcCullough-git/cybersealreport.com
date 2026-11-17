@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tech unemployment rate chart</title>
+<style>
+  :root {
+    --text: #2a2a28; --rule: #e4e4e0; --label: #55554f;
+    --main: #d02c2b; --secondary: #141414; --tertiary: #ac1a1c; --highlight: #ffe6e2;
+    --sans: "Public Sans", sans-serif; --mono: "JetBrains Mono", monospace;
+  }
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; }
+  body { color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+  #chart { position: relative; width: 100%; height: 100%; min-height: 240px; touch-action: pan-y; }
+  #chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .tick { font: 400 11px var(--mono); fill: var(--label); }
+  .xlab { font: 400 11.5px var(--mono); fill: var(--label); }
+  .val { font: 500 12px var(--mono); fill: var(--main); }
+  .key { font: 400 11.5px var(--sans); fill: var(--label); }
+  .pt { fill: var(--main); stroke: #ffffff; stroke-width: 2; transition: r 120ms; }
+  .pt.active { fill: var(--tertiary); }
+  .pt:focus { outline: none; }
+  .pt:focus-visible { stroke: var(--secondary); }
+  #tip {
+    position: absolute; pointer-events: none; opacity: 0; transition: opacity 120ms;
+    background: var(--secondary); color: #f7f7f5; border-radius: 8px; padding: 8px 10px;
+    font: 400 12px/1.4 var(--sans); max-width: 220px; z-index: 2;
+  }
+  #tip .n { display: block; font: 500 15px var(--mono); color: #ffffff; }
+  #tip .s { display: block; font: 400 10.5px/1.45 var(--mono); color: #d8d8d2; margin-top: 3px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+<div id="chart" role="group" aria-label="Line chart of the US tech occupation unemployment rate, monthly. It rose from 2.8% in June 2025 to a peak of 4.0% in November 2025, then fell back to 2.8% by October 2026."></div>
+<div id="tip" role="status" aria-live="polite"></div>
+
+<table class="sr-only">
+  <caption>US tech occupation unemployment rate by month (CompTIA Tech Jobs Reports, analyzing BLS data). Months without a figure were not collected.</caption>
+  <thead><tr><th scope="col">Month</th><th scope="col">Tech unemployment rate</th><th scope="col">National unemployment rate</th></tr></thead>
+  <tbody>
+    <tr><td>June 2025</td><td>2.8%</td><td>Not collected</td></tr>
+    <tr><td>August 2025</td><td>3.0%</td><td>Not collected</td></tr>
+    <tr><td>November 2025</td><td>4.0%</td><td>Not collected</td></tr>
+    <tr><td>December 2025</td><td>3.3%</td><td>Not collected</td></tr>
+    <tr><td>January 2026</td><td>3.6%</td><td>Not collected</td></tr>
+    <tr><td>February 2026</td><td>3.8%</td><td>Not collected</td></tr>
+    <tr><td>March 2026</td><td>3.9%</td><td>Not collected</td></tr>
+    <tr><td>April 2026</td><td>3.5%</td><td>Not collected</td></tr>
+    <tr><td>May 2026</td><td>3.1%</td><td>Not collected</td></tr>
+    <tr><td>June 2026</td><td>2.9%</td><td>4.2%</td></tr>
+    <tr><td>October 2026</td><td>2.8%</td><td>4.1%</td></tr>
+  </tbody>
+</table>
+
+<script>
+(function () {
+  // i = months since June 2025
+  var data = [
+    { i: 0,  label: "June 2025", v: 2.8 },
+    { i: 2,  label: "August 2025", v: 3.0 },
+    { i: 5,  label: "November 2025", v: 4.0, peak: true },
+    { i: 6,  label: "December 2025", v: 3.3 },
+    { i: 7,  label: "January 2026", v: 3.6 },
+    { i: 8,  label: "February 2026", v: 3.8 },
+    { i: 9,  label: "March 2026", v: 3.9 },
+    { i: 10, label: "April 2026", v: 3.5 },
+    { i: 11, label: "May 2026", v: 3.1 },
+    { i: 12, label: "June 2026", v: 2.9, nat: 4.2 },
+    { i: 16, label: "October 2026", v: 2.8, nat: 4.1 }
+  ];
+  var N = 17, YMIN = 2, YMAX = 4.5, TICKS = [2, 3, 4];
+  var SRC = "CompTIA Tech Jobs Report, analyzing BLS data";
+  var NS = "http://www.w3.org/2000/svg";
+  var root = document.getElementById("chart"), tip = document.getElementById("tip");
+  var pts = [], X, Y;
+
+  function el(name, attrs, parent, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  function show(k) {
+    pts.forEach(function (p, j) { p.classList.toggle("active", j === k); p.setAttribute("r", j === k ? 6.5 : 4.5); });
+    var d = data[k];
+    cross.setAttribute("x1", X(d.i)); cross.setAttribute("x2", X(d.i)); cross.style.opacity = 1;
+    tip.innerHTML = "<span>" + d.label + "</span><span class=\"n\">" + d.v.toFixed(1) + "% tech unemployment</span>" +
+      "<span class=\"s\">" + (d.nat ? "National rate: " + d.nat.toFixed(1) + "%<br>" : "") + SRC + "</span>";
+    var box = root.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+    // beside the point (never over it or its label), flipped left near the right edge
+    var x = X(d.i) + 16; if (x + tw > box.width) x = X(d.i) - tw - 16;
+    var y = Y(d.v) - th / 2;
+    if (x < 0) {                                   // no room on either side: center it below the point
+      x = Math.max(0, Math.min(X(d.i) - tw / 2, box.width - tw));
+      y = Y(d.v) + 20;
+      if (y + th > box.height) y = Y(d.v) - th - 20;
+    }
+    tip.style.left = Math.max(0, x) + "px";
+    tip.style.top = Math.max(0, Math.min(y, box.height - th)) + "px"; tip.style.opacity = 1;
+  }
+  function hide() {
+    tip.style.opacity = 0; cross.style.opacity = 0;
+    pts.forEach(function (p) { p.classList.remove("active"); p.setAttribute("r", 4.5); });
+  }
+  var cross;
+
+  function draw() {
+    root.innerHTML = ""; pts = [];
+    var W = root.clientWidth, H = Math.max(root.clientHeight, 240);
+    var narrow = W < 520;
+    var left = 38, right = 16, top = 30, bottom = 30, pad = 14;
+    var pw = W - left - right, ph = H - top - bottom;
+    X = function (i) { return left + pad + (pw - 2 * pad) * i / (N - 1); };
+    Y = function (v) { return top + ph * (1 - (v - YMIN) / (YMAX - YMIN)); };
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }, root);
+
+    // key for the dashed spans
+    var kx = W - right - (narrow ? 150 : 170);
+    el("line", { x1: kx, y1: 8, x2: kx + 22, y2: 8, stroke: "#d02c2b", "stroke-width": 1.5, "stroke-dasharray": "3 4", opacity: 0.7 }, svg);
+    el("text", { x: kx + 28, y: 12, class: "key" }, svg, "months not collected");
+
+    TICKS.forEach(function (t) {
+      el("line", { x1: left, y1: Y(t), x2: W - right, y2: Y(t), stroke: "#e4e4e0", "stroke-width": 1 }, svg);
+      el("text", { x: left - 8, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg, t + "%");
+    });
+    var xl = narrow ? { 0: "Jun ’25", 6: "Dec", 12: "Jun ’26", 16: "Oct" }
+                    : { 0: "Jun ’25", 3: "Sep", 6: "Dec", 9: "Mar ’26", 12: "Jun", 16: "Oct ’26" };
+    Object.keys(xl).forEach(function (i) {
+      var anc = +i === 0 ? "start" : (+i === N - 1 ? "end" : "middle");
+      el("text", { x: X(+i) + (+i === 0 ? -pad : (+i === N - 1 ? pad : 0)), y: H - 8, "text-anchor": anc, class: "xlab" }, svg, xl[i]);
+    });
+
+    // filled area + solid line under each run of consecutive months; dashed across gaps
+    var runs = [], cur = [data[0]];
+    for (var k = 1; k < data.length; k++) {
+      if (data[k].i - data[k - 1].i === 1) cur.push(data[k]);
+      else { runs.push(cur); cur = [data[k]]; }
+      if (data[k].i - data[k - 1].i > 1) {
+        el("line", { x1: X(data[k - 1].i), y1: Y(data[k - 1].v), x2: X(data[k].i), y2: Y(data[k].v),
+                     stroke: "#d02c2b", "stroke-width": 1.5, "stroke-dasharray": "3 4", opacity: 0.7 }, svg);
+      }
+    }
+    runs.push(cur);
+    runs.forEach(function (r) {
+      if (r.length < 2) return;
+      var line = r.map(function (d) { return X(d.i) + "," + Y(d.v); }).join(" L");
+      el("path", { d: "M" + line + " L" + X(r[r.length - 1].i) + "," + Y(YMIN) + " L" + X(r[0].i) + "," + Y(YMIN) + " Z",
+                   fill: "#ffe6e2" }, svg);
+      el("path", { d: "M" + line, fill: "none", stroke: "#d02c2b", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    });
+
+    cross = el("line", { x1: 0, y1: top, x2: 0, y2: H - bottom, stroke: "#141414", "stroke-width": 1, "stroke-dasharray": "2 3", opacity: 0 }, svg);
+    cross.style.opacity = 0;
+
+    data.forEach(function (d, k) {
+      var c = el("circle", { cx: X(d.i), cy: Y(d.v), r: 4.5, class: "pt", tabindex: 0, role: "img",
+                             "aria-label": d.label + ": " + d.v.toFixed(1) + "% tech unemployment" }, svg);
+      c.addEventListener("focus", function () { show(k); });
+      c.addEventListener("blur", hide);
+      pts.push(c);
+    });
+    // direct labels: start, peak, end
+    [[0, 18], [2, -12], [10, -12]].forEach(function (a) {
+      var d = data[a[0]];
+      el("text", { x: X(d.i), y: Y(d.v) + a[1], "text-anchor": a[0] === 0 ? "start" : (a[0] === 10 ? "end" : "middle"), class: "val",
+                   dx: a[0] === 0 ? -6 : (a[0] === 10 ? 6 : 0) }, svg, d.v.toFixed(1) + "%");
+    });
+
+    // pointer: snap to the nearest month with a value
+    function nearest(evt) {
+      var rect = root.getBoundingClientRect(), mx = evt.clientX - rect.left, best = 0, bd = 1e9;
+      data.forEach(function (d, k) { var dd = Math.abs(X(d.i) - mx); if (dd < bd) { bd = dd; best = k; } });
+      return best;
+    }
+    root.onpointermove = function (e) { show(nearest(e)); };
+    root.onpointerdown = function (e) { show(nearest(e)); };
+    root.onpointerleave = hide;
+  }
+
+  draw();
+  var tm;
+  function redraw() { clearTimeout(tm); tm = setTimeout(draw, 80); }
+  window.addEventListener("resize", redraw);
+  if (window.ResizeObserver) new ResizeObserver(redraw).observe(root);
+})();
+</script>
+</body>
+</html>
