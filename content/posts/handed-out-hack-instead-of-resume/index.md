@@ -79,3 +79,5 @@ The jobs are coming back but there's still plenty of demand.
 That's why proof matters more than ever in a job market where entry level positions require three years of experience. That’s why proof matters more than ever. Steven said it best. “The whole point was to hand someone something that does something instead of something they throw away.”
 
 So build something. Post it. Send the link. Your resume gets seven seconds. Your work can get you the interview.
+
+<p>If you want to see the research behind this article, including every source and how each number was checked, the full brief is <a href="https://drive.google.com/file/d/1xPeyNNnWEU7LyGYyBlsMcEr7LZ0SVcq0/view?usp=sharing">here</a>.</p>
