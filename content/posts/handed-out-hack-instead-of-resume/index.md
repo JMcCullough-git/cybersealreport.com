@@ -76,7 +76,7 @@ There’s good news. Tech unemployment peaked at 4.0% in November 2025. By Octob
 
 The jobs are coming back but there's still plenty of demand.
 
-That's why proof matters more than ever in a job market where entry level positions require three years of experience. That’s why proof matters more than ever. Steven said it best. “The whole point was to hand someone something that does something instead of something they throw away.”
+That's why proof matters more than ever in a job market where entry level positions require three years of experience. Steven said it best. “The whole point was to hand someone something that does something instead of something they throw away.”
 
 So build something. Post it. Send the link. Your resume gets seven seconds. Your work can get you the interview.
 
