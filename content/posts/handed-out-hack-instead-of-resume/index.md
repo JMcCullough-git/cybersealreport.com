@@ -7,8 +7,8 @@ tags:
   - Careers
 cover: cover.jpg
 coverAlt: A red pocket multitool with its blades fanned out and a USB connector as one of the tools, lying on a printed résumé with Experience and Education headings, against a dark background.
-featured: false
-hideFromHome: true
+featured: true
+hideFromHome: false
 ---
 <!--
   Properties above:
@@ -53,11 +53,11 @@ Doom and gloom can be easy to fall into when you hear the phrase "Lets talk numb
 
 I ran some numbers. To put this in perspective, your odds of winning any prize in the Powerball are 1 in 24.9, or roughly 4%. That means you are statistically more likely to walk into a gas station, buy a random lottery ticket, and win money than you are to get a callback from a blind PDF submission in a Workday portal.
 
-You may lose the job not because of a better candidate but simply because you weren't able to get your foot in the door. I remember spending hours agonizing over my resume. However, 81% of recruiters spend under a minute per resume. That's human nature though. We all have short attention spans. The clock is ticking right when that hits their s
+You may lose the job not because of a better candidate but simply because you weren't able to get your foot in the door. I remember spending hours agonizing over my resume. However, 81% of recruiters spend under a minute per resume. That's human nature though. We all have short attention spans. 
 
 ![Time spent on an initial résumé screen](fig4-resume-screening-time.html)
 
-The clock is ticking right when the PDF hits their screen. This is exactly why Steven’s BadUSB stunt is so brilliant. It forgoes the quick glance of a resume to an intriguing demonstration of his skills.
+The clock is ticking right when the PDF hits their screen. This is exactly why Steven’s BadUSB stunt is so brilliant. It forgoes the quick glance of a resume to a demonstration of his skills.
 
 The standard two-page resume is what gets you thrown into the 97% rejection pile with the other 243 applicants. Tangible, hands-on proof is what pulls you out.
 
@@ -65,7 +65,7 @@ You can spend your weekend tweaking the margins on your PDF. Or you can find you
 
 I'd recommend starting now. Here's my 3 short simple details I've noticed that make a difference.
 
-1. **Be Specific.** Don't let AI write their resume. People love a little splash of personality. Tell them about your family or the hobby you can’t stop talking about. Show them you’re not a robot.
+1. **Be Specific.** Don't let AI write your resume. People love a little splash of personality. Tell them about your family or the hobby you can’t stop talking about. Show them you’re not a robot.
 2. **Be Scrappy**. Use what you’ve got. An old laptop can become your first home lab. Free cloud tiers and practice sites like TryHackMe cost nothing to start. You don’t need a big budget to show real skills.
 3. **Be Specialized.** Want to be a security analyst? Don’t wait for a job to hand you a network. Build a vulnerable Windows machine in your home lab and scan it with Nessus. Bring a printed write-up of how you triaged each finding.
 ## Find Your BadUSB

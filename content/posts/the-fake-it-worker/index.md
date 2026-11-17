@@ -7,7 +7,7 @@ tags:
   - Security
 cover: cover.jpg
 coverAlt: '"Rows of open laptops running video calls in a dim room, with red-and-blue flags outside the window"'
-featured: true
+featured: false
 hideFromHome: false
 ---
 <!--
