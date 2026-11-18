@@ -90,11 +90,11 @@ Tags in use: `investigations`, `threat-research`, `vulnerabilities`, `tooling`, 
 
 ## Code blocks
 
-````markdown
+~~~markdown
 ```bash {title="check_build.sh"}
 grep -r "password" /etc
 ```
-````
+~~~
 
 The title shows in the dark bar above the code, next to a Copy button. Without `{…}`, the bar shows just the language.
 
@@ -124,13 +124,13 @@ I drag a chart's HTML file into the article, the same way I add an image.
 
 To force a height, I use the block version.
 
-````markdown
+~~~markdown
 ```chart
 file: payments-chart.html
 height: 520
 caption: Ransomware payments by year
 ```
-````
+~~~
 
 **The rule that matters.** A chart must be one self-contained file. All of its code and styles live inside it. If it loads a library from another site, the sandbox blocks it and the chart shows up blank. Hugo prints a warning that names the file, so I catch it before publishing.
 
