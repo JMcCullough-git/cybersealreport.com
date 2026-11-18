@@ -1,13 +1,11 @@
 # Writing cheatsheet
 
 How I write, format and publish posts for The Cyber Seal Report. Everything here works in Obsidian and on the site.
-
-TEST 1 2 3 4 5
-
 ## Publishing workflow
 
 1. **Start the article.** I press `Ctrl + N` for a blank note, then click the **<%** Templater icon in the left ribbon → **New article** → type the title. Templater moves the note to `drafts/posts/<title>/index.md` and fills in the properties. `drafts/` is gitignored, so nothing in it reaches the public repo.
-   - Command palette alternative: `Ctrl + P` → "Templater: Create new note from template" → **New article**.
+
+- Command palette alternative: `Ctrl + P` → "Templater: Create new note from template" → **New article**.
    - The **<%** icon needs an open note. With nothing open, Templater shows "No active editor".
 2. **Fill in the properties** at the top: `dek` and `tags` (see Article properties below).
 3. **Write the body** under the properties.
