@@ -43,12 +43,12 @@ A block is a code block with the block's name where the language would go. Insid
 - `---` starts markdown notes (cards only).
 - `===` starts the next card (cards only).
 
-````markdown
+~~~markdown
 ```stats
 256 | IPs scanned
 5 | Hosts up
 ```
-````
+~~~
 
 Blocks show as plain code in Obsidian's editor; they turn into the designed version on the site. Regular writing, `## headings`, `> [!note]` callouts, tables, images and code blocks all work between blocks as usual.
 
@@ -56,34 +56,34 @@ Blocks show as plain code in Obsidian's editor; they turn into the designed vers
 
 ### tools: what I used
 
-````markdown
+~~~markdown
 ```tools
 Nmap | 7.99
 Nessus Essentials Plus
 ```
-````
+~~~
 
 One tool per line: `name | version`. The version is optional. The tools also show as chips on the Investigations tab and the home card.
 
 ### stats: big number tiles
 
-````markdown
+~~~markdown
 ```stats
 256 | IPs scanned
 40.48s | Scan time
 ```
-````
+~~~
 
 `number | label`, one tile per line. Works for anything countable: accounts traced, days tracked, dollars moved.
 
 ### glance: the dark "at a glance" panel
 
-````markdown
+~~~markdown
 ```glance
 file: findings.csv
 note: Unique findings across all three scans, both hosts.
 ```
-````
+~~~
 
 - With `file:`, it counts the CSV's `Severity` (or `Risk`) column.
 - Without a file, I type the rows: `Critical | 5`.
@@ -92,7 +92,7 @@ note: Unique findings across all three scans, both hosts.
 
 ### host / entity / cards: cards
 
-````markdown
+~~~markdown
 ```host
 title: 10.71.2.102
 badge: Critical risk
@@ -107,7 +107,7 @@ Notes in markdown at the bottom of the card.
 title: 10.71.2.104
 badge: Low risk
 ```
-````
+~~~
 
 - `host`, `entity` and `cards` are the same block; I pick the name that reads best (`entity` for a person, handle, domain or wallet).
 - `title:` big name on the card. `badge:` pill on the right, colored when it says Critical, High, Medium, Low or Info. `subtitle:` small grey line.
@@ -120,13 +120,13 @@ badge: Low risk
 
 ### table: any CSV as a table
 
-````markdown
+~~~markdown
 ```table
 file: hosts.csv
 columns: IP, Role, Risk
 where: Risk = High
 ```
-````
+~~~
 
 - `columns:` and `where:` are optional.
 - Columns named Severity, Risk, Rating, Confidence or Status get colored pills.
@@ -135,7 +135,7 @@ where: Risk = High
 
 ### findings: the interactive findings table
 
-````markdown
+~~~markdown
 ```findings
 file: findings.csv
 columns: CVSS, VPR, EPSS
@@ -143,7 +143,7 @@ details: What it means, Fix, Nessus name, Plugin ID
 hide: Info
 scans: B = Basic Network Scan, W = Win7 & XP scan, T = Windows Targeted
 ```
-````
+~~~
 
 - Readers get a search box, host and scan switches, severity and tag filters, and a **+** on each row that opens the `details:` columns.
 - Columns it recognizes in the CSV: `Severity` (or `Risk`), `Finding` (or `Name`, `Title`), `Host` (or `IP`), `Tags` (separated by `;`), `Found by` (letters from `scans:`, like `BWT`).
@@ -152,31 +152,31 @@ scans: B = Basic Network Scan, W = Win7 & XP scan, T = Windows Targeted
 
 **Without a file** it's a short findings list:
 
-````markdown
+~~~markdown
 ```findings
 High | Two end-of-life Windows systems are reachable on SMB and RDP.
 Medium | VNC is exposed on .101.
 ```
-````
+~~~
 
 ### priority / next-steps: numbered list
 
-````markdown
+~~~markdown
 ```priority
 MS17-010: EternalBlue | Used by WannaCry. Public exploit. | High · VPR 9.9 · 10.71.2.102
 ```
-````
+~~~
 
 `title | why it matters | small grey meta`. The last two are optional; a line with just text reads as a plain sentence (good for "What I would do next").
 
 ### timeline: what happened when
 
-````markdown
+~~~markdown
 ```timeline
 Aug 14, 2026 | First forum post under the handle
 Aug 20, 2026 | Domain registered with the same email
 ```
-````
+~~~
 
 `date | event`. Markdown works in the event text.
 
@@ -184,11 +184,11 @@ Aug 20, 2026 | Domain registered with the same email
 
 A normal code block with a title:
 
-````markdown
+~~~markdown
 ```text {title="nmap · 10.71.2.101"}
 5800/tcp open  vnc-http  TightVNC
 ```
-````
+~~~
 
 ## Data files (CSV)
 
