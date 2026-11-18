@@ -9,6 +9,7 @@ cover: cover.jpg
 coverAlt: A red pocket multitool with its blades fanned out and a USB connector as one of the tools, lying on a printed résumé with Experience and Education headings, against a dark background.
 featured: true
 hideFromHome: false
+subscribersOnly: true
 ---
 <!--
   Properties above:
