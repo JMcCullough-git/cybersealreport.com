@@ -80,4 +80,28 @@ That's why proof matters more than ever in a job market where entry level positi
 
 So build something. Post it. Send the link. Your resume gets seven seconds. Your work can get you the interview.
 
-<p>If you want to see the research behind this article, including every source and how each number was checked, the full brief is <a href="https://drive.google.com/file/d/1xPeyNNnWEU7LyGYyBlsMcEr7LZ0SVcq0/view?usp=sharing">here</a>.</p>
+## Sources
+
+**Applications per job and entry-level applicants (Figs. 1–2)**
+- Greenhouse, [*The Hire Standard: Greenhouse Benchmark Report, North America*](https://www.greenhouse.com/recruiting-benchmarks), March 2026. Platform data from 640M+ applications at 6,000+ companies, 2022–2025. ([PDF](https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/69c6a67c710b821d52b0d5d3_Greenhouse_Benchmark_Report_March2026_NorthAmerica.pdf))
+- iCIMS, [*iCIMS Insights June Workforce Report*](https://www.icims.com/company/newsroom/juneinsights2025/), June 24, 2025. Platform data from thousands of US companies.
+
+**Interview rate by source (Fig. 3)**
+- Ashby, [*Are referred candidates more likely to get hired?*](https://www.ashbyhq.com/talent-trends-report/reports/referrals), May 15, 2025. 38M+ applications across 93K jobs, 2021–2024.
+
+**Time spent on an initial résumé screen (Fig. 4)**
+- ResumeGo, [*Survey: How Much Time Do Recruiters Spend On A Resume?*](https://www.resumego.net/research/how-much-time-spend-resume/), March 2024. Survey of 418 US recruiters and hiring managers, Jan–Mar 2024.
+
+**Tech occupation unemployment rate (Fig. 5)**
+CompTIA Tech Jobs Reports, analyzing monthly Bureau of Labor Statistics data:
+- [June 2025](https://www.comptia.org/en-us/about-us/news/press-releases/Tech-hiring-activity-outpaces-expectations-CompTIA-Tech-Jobs-Report-finds/), released July 3, 2025
+- [August 2025](https://www.comptia.org/en-us/about-us/news/press-releases/Latest-employment-data-confirms-an-uneven-tech-hiring-landscape-CompTIA-analysis-finds/), released Sept 5, 2025
+- [November 2025](https://www.comptia.org/en-us/about-us/news/press-releases/Latest-employment-data-reflects-drag-on-tech-hiring-as-employers-navigate-uncertainty-on-several-fronts-CompTIA-analysis-finds/), released Dec 16, 2025
+- [December 2025](https://www.comptia.org/en-us/about-us/news/press-releases/Tech-hiring-remains-stuck-CompTIA-analysis-of-latest-employment-data-finds/), released Jan 9, 2026
+- [January 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Job-postings-for-future-hiring-a-positive-in-the-latest-tech-employment-data-CompTIA-analysis-finds/), released Feb 11, 2026
+- [February 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Modest-job-growth-signs-of-future-hiring-intent-highlight-latest-tech-employment-data-CompTIA-analysis-reveals/), released March 6, 2026
+- [March 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Uncertainty-and-caution-apparent-in-new-tech-employment-data-CompTIA-analysis-finds/), released April 3, 2026
+- [April 2026](https://www.comptia.org/en-us/about-us/news/press-releases/New-tech-job-postings-hit-three-year-high-as-hiring-swings-into-positive-territory-CompTIA-analysis-reveals/), released May 8, 2026
+- [May 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Tech-hiring-lifts-national-job-growth-demonstrates-rising-demand-for-tech-talent-CompTIA-finds/), released June 5, 2026
+- [June 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Tech-hiring-momentum-continues-as-tech-occupations-and-new-job-postings-increase-CompTIA-analysis-reveals/), released July 2, 2026
+- [October 2026](https://www.comptia.org/en-us/about-us/news/press-releases/Tech-employment-gains-momentum-in-October-CompTIA-analysis-finds/), released Nov 6, 2026

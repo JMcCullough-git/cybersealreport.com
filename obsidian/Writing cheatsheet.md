@@ -1,4 +1,3 @@
-# Writing cheatsheet
 
 How I write, format and publish posts for The Cyber Seal Report. Everything here works in Obsidian and on the site.
 ## Publishing workflow
