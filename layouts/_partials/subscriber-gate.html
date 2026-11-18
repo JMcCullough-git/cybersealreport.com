@@ -1,0 +1,37 @@
+{{- /*
+  Subscriber-only articles (property subscribersOnly: true). A modal asks for an email as soon
+  as the page loads and can't be closed; the article body stays hidden until the reader signs up.
+  - Signup goes to the normal newsletter form (params.newsletter), so everyone joins one list.
+    Kit still sends its usual confirmation email.
+  - static/js/gate.js sends the email to Kit without leaving the page, then opens the article
+    and remembers this device (localStorage), so other subscriber-only articles open too.
+  - static/js/gate-check.js runs in <head> so a remembered reader never sees the modal flash.
+  - Without JavaScript the form posts to Kit like any signup form and the article stays hidden.
+  This is a nudge, not a lock: the text is in the page and the repo is public.
+*/ -}}
+{{- $n := site.Params.newsletter }}
+{{- if $n.action }}
+<div class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title" aria-describedby="gate-text" data-gate>
+  <div class="gate__panel">
+    <div class="gate__ask">
+      <span class="gate__mark" role="img" aria-label="Cyber Seal"></span>
+      <span class="kicker kicker--lg">Subscribers only</span>
+      <h2 class="gate__title" id="gate-title">This one's for subscribers.</h2>
+      <p class="gate__text" id="gate-text">Enter your email to read it now. You'll also get new research every other Tuesday.</p>
+      <form class="gate__form" action="{{ $n.action }}" method="post" data-gate-form>
+        <label class="visually-hidden" for="gate-email">Email address</label>
+        <input class="gate__input" id="gate-email" type="email" name="{{ $n.field | default "email" }}" required placeholder="you@company.com" autocomplete="email">
+        <button class="btn btn--primary gate__button" type="submit">Subscribe and read</button>
+      </form>
+      <p class="gate__fine">No spam. Unsubscribe anytime.</p>
+    </div>
+    <div class="gate__done" hidden data-gate-done>
+      <span class="gate__mark" role="img" aria-label="Cyber Seal"></span>
+      <span class="kicker kicker--lg">You're in</span>
+      <h2 class="gate__title" tabindex="-1">Thanks for subscribing.</h2>
+      <p class="gate__text">Check your inbox and click the link to confirm your subscription.</p>
+      <button class="btn btn--primary gate__button" type="button" data-gate-open>Read the article</button>
+    </div>
+  </div>
+</div>
+{{- end }}

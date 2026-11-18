@@ -12,6 +12,11 @@
 <meta name="robots" content="noindex">
 {{- else }}
 <link rel="canonical" href="{{ .Permalink }}">
+{{- if and .IsPage .Params.subscribersOnly site.Params.newsletter.action }}
+<script src="{{ "js/gate-check.js" | relURL }}"></script>
+{{- /* Tells Google the article body is behind a signup, so showing it the full text isn't treated as cloaking. */}}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "Article" "headline" .Title "datePublished" (.Date.Format "2006-01-02") "author" (dict "@type" "Person" "name" site.Params.author) "isAccessibleForFree" false "hasPart" (dict "@type" "WebPageElement" "isAccessibleForFree" false "cssSelector" ".gated-content") | jsonify | safeJS }}</script>
+{{- end }}
 {{- if .Params.noindex }}
 <meta name="robots" content="noindex, nofollow">
 {{- else if in (slice "taxonomy" "term") .Kind }}

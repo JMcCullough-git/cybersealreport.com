@@ -876,3 +876,29 @@ html.lightbox-open { overflow: hidden; }
 .chart__frame { display: block; width: 100%; border: 0; background: transparent; color-scheme: light; }
 .chart figcaption { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--muted); }
 .chart__feed-link { display: none; }
+
+/* Subscriber-only articles: modal on load, body hidden until signup (see subscriber-gate.html). */
+:root:not(.is-subscribed) .gated-content { display: none; }
+:root.is-subscribed .gate { display: none; }
+:root:not(.is-subscribed):has(.gate) { overflow: hidden; }
+.gate {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px;
+  background: rgba(20, 20, 20, .55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  overflow-y: auto;
+}
+.gate__panel { width: 100%; max-width: 460px; padding: 36px 32px 30px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); text-align: center; }
+.gate__ask, .gate__done { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.gate__ask[hidden], .gate__done[hidden] { display: none; }
+.gate__mark {
+  width: 56px; height: 56px; background: var(--ink);
+  -webkit-mask: url(/images/cyber-seal-logo.svg) center / contain no-repeat; mask: url(/images/cyber-seal-logo.svg) center / contain no-repeat;
+}
+.gate__title { margin: 0; font: 800 28px/1.15 var(--font-display); letter-spacing: -.02em; color: var(--ink); outline: none; }
+.gate__text { margin: 0; font-size: 16px; line-height: 1.55; color: var(--body); }
+.gate__form { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.gate__input { width: 100%; padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface); font: inherit; font-size: 16px; color: var(--ink); }
+.gate__input:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.gate__button { width: 100%; padding: 14px 20px; border: 0; font-size: 15px; cursor: pointer; }
+.gate__button:disabled { opacity: .7; cursor: progress; }
+.gate__fine { margin: 0; font-size: 13px; color: var(--muted); }
+@media (max-width: 520px) { .gate__panel { padding: 28px 22px 24px; } .gate__title { font-size: 24px; } }
