@@ -71,6 +71,7 @@
 				<guid>{{ .Permalink }}</guid>
 				{{- $desc := .Summary | replaceRE `(?s)<!--.*?-->` "" | strings.TrimSpace }}
 				{{- /* Investigations are mostly tables and blocks: send the dek and a link instead. */}}
+				{{- if .Params.subscribersOnly }}{{ $desc = printf "<p>%s</p><p><a href=%q>Subscriber-only article. Read it on the site →</a></p>" (.Params.dek | default "" | htmlEscape) .Permalink }}{{ end }}
 				{{- if and (eq .Section "investigations") .Params.dek }}{{ $desc = printf "<p>%s</p><p><a href=%q>Read the full investigation →</a></p>" (.Params.dek | htmlEscape) .Permalink }}{{ end }}
 				<description>{{ $desc | transform.XMLEscape | safeHTML }}</description>
 			</item>

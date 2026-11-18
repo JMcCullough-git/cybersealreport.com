@@ -28,6 +28,7 @@ cover: ""
 coverAlt: ""
 featured: false
 hideFromHome: false
+subscribersOnly: false
 ---
 <!--
   Properties above:
@@ -38,6 +39,7 @@ hideFromHome: false
     content/posts/ and unticks this, then Commit-and-sync puts it live. Until then it never reaches GitHub.
   - featured: tick to pin this as the big story on the home page.
   - hideFromHome: tick to keep it off the home page (still listed under Articles).
+  - subscribersOnly: tick to put the article behind a subscribe modal. Readers enter their email to open it.
   Comments like this one never appear on the site.
 -->
 

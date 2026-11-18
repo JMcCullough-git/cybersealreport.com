@@ -28,6 +28,7 @@ How I write, format and publish posts for The Cyber Seal Report. Everything here
 | `draft` | Ticked keeps the post off the site. **Publish draft** unticks it for me when it moves the article out of `drafts/`. |
 | `featured` ☑ | Pins the post as the big lead story on the home page, however old. If several are ticked, the newest ticked one wins. |
 | `hideFromHome` ☑ | Keeps the post off the home page. It still appears under Articles, tags, Archive and RSS. |
+| `subscribersOnly` ☑ | Puts the article behind a subscribe modal. See Subscriber-only articles below. |
 
 **Home page:** it shows two stories, the lead (big card) and one beside it. Without `featured`, the newest post leads. Everything else lives on the Articles page.
 
@@ -104,6 +105,18 @@ The title shows in the dark bar above the code, next to a Copy button. Without `
 - An image on its own line becomes a numbered evidence figure, but only if it has a caption.
 - File names with spaces (like Obsidian's `Pasted image …png`) are fine.
 - The site publishes resized copies with **GPS and camera metadata stripped**. The original files never go online.
+
+## Subscriber-only articles
+
+I tick `subscribersOnly` in Properties. Older posts don't have it yet, so I add it with **+ Add property**, type Checkbox.
+
+- **What readers see.** A modal covers the article as soon as it loads. It asks for their email and can't be closed.
+- **After they sign up.** The article opens right away. Kit still sends the normal confirmation email. The site remembers that device, so my other subscriber-only articles open too.
+- **The list.** It's my normal newsletter form, so everyone lands on the same list.
+- **Existing subscribers.** They enter their email again. Kit knows them and doesn't add a duplicate. I also send the article to the list as a broadcast.
+- **RSS.** Feed readers get the dek and a link to read it on the site.
+
+This is a nudge, not a lock. The text is still in the page, and my repo is public. Anyone determined can read it with reader mode or the page source. I never put anything private behind it.
 
 ## Interactive charts
 

@@ -24,7 +24,8 @@
   </div>
   {{- end }}
 
-  <article class="prose">
+  {{- $gated := and .Params.subscribersOnly site.Params.newsletter.action }}
+  <article class="prose{{ if $gated }} gated-content{{ end }}">
     {{ .Content | replaceRE `(?s)<!--.*?-->` "" | safeHTML }}{{/* notes in <!-- comments --> never reach the page */}}
 
     {{- if $tags }}
@@ -34,6 +35,8 @@
     {{- end }}
     <p class="disclaimer">{{ site.Params.disclaimer }}</p>
   </article>
+
+  {{- if $gated }}{{ partial "subscriber-gate.html" . }}{{ end }}
 
   {{- /* Pages in a section are sorted newest first, so .NextInSection is the next (older) article. */ -}}
   {{- with .NextInSection | default .PrevInSection }}
