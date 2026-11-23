@@ -38,12 +38,19 @@
 <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
 {{- end }}
 
+<link rel="icon" href="/favicon.ico">
 <link rel="icon" href="/favicon-192x192.png" sizes="192x192" type="image/png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {{- with .OutputFormats.Get "rss" }}
 <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+{{- end }}
+{{- /* The main feed on every page, so readers like Feedly find it from any URL. */}}
+{{- $mainFeed := "index.xml" | absURL }}
+{{- $ownFeed := "" }}{{ with .OutputFormats.Get "rss" }}{{ $ownFeed = .Permalink }}{{ end }}
+{{- if ne $ownFeed $mainFeed }}
+<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ $mainFeed }}">
 {{- end }}
 
 <link rel="preload" href="/fonts/bricolage-grotesque-opsz.woff2" as="font" type="font/woff2" crossorigin>
